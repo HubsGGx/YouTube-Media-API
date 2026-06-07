@@ -1,34 +1,36 @@
-# 🎥 YouTube Media API - Documentação Oficial
+# YouTube Media API - Documentação Oficial
 
-> Sistema de alta performance para extração e conversão de mídia do YouTube (MP3/MP4), oferecendo links temporários de streaming e metadados detalhados.
-
-A **YouTube Media API** permite que desenvolvedores integrem capacidades de download e streaming de conteúdo do YouTube em suas aplicações de forma simplificada. Com gerenciamento automático de cache e expiração de links, a API garante eficiência e economia de recursos.
+Este documento detalha a **YouTube Media API**, um sistema robusto para a extração e conversão de conteúdo de mídia do YouTube. A API suporta a obtenção de áudio (MP3) e vídeo (MP4), fornecendo links temporários para streaming e acesso a metadados detalhados. Desenvolvida para desenvolvedores, a API integra funcionalidades de gerenciamento de cache e expiração automática de links, otimizando a eficiência e o uso de recursos.
 
 ---
 
-## 🚀 Informações Gerais
+## Informações Gerais
+
+A API opera sob as seguintes especificações técnicas:
 
 *   **Base URL:** `https://hubsdev.com/api/download`
 *   **Formato de Dados:** `JSON`
-*   **Autenticação:** Chave de API via parâmetro `key`
-*   **Tempo de Vida do Link:** 2 horas
-*   **Timeout Padrão:** 30 segundos (streaming) / processamento variável
+*   **Autenticação:** Requer uma chave de API válida, fornecida via parâmetro `key`.
+*   **Tempo de Vida do Link:** Os links gerados possuem validade de 2 horas.
+*   **Timeout Padrão:** O tempo limite para streaming é de 30 segundos, enquanto o processamento pode variar.
 
 ---
 
-## 🛠 Endpoints Principais
+## Endpoints da API
 
-### 1. YouTube para MP3 (Áudio)
-Converte um vídeo do YouTube para o formato MP3 e retorna um identificador único para acesso ao stream.
+### 1. Conversão para MP3 (Áudio)
+
+Este endpoint facilita a conversão de um vídeo do YouTube para o formato MP3, retornando um identificador único (`id`) para acesso ao stream de áudio.
 
 **Endpoint:** `GET /ytmp3?key={KEY}&q={QUERY}`
 
-| Parâmetro | Tipo | Obrigatório | Descrição |
-| :--- | :--- | :--- | :--- |
-| `key` | string | Sim | Sua chave de API válida. |
-| `q` | string | Sim | Nome do vídeo, palavra-chave ou URL direta do YouTube. |
+| Parâmetro | Tipo   | Obrigatório | Descrição                                        |
+| :-------- | :----- | :---------- | :----------------------------------------------- |
+| `key`     | string | Sim         | Chave de API válida para autenticação.           |
+| `q`       | string | Sim         | Termo de busca (nome do vídeo, palavra-chave ou URL do YouTube). |
 
-#### Resposta de Sucesso (200 OK)
+#### Resposta de Sucesso (HTTP 200 OK)
+
 ```json
 {
   "success": true,
@@ -50,17 +52,19 @@ Converte um vídeo do YouTube para o formato MP3 e retorna um identificador úni
 
 ---
 
-### 2. YouTube para MP4 (Vídeo)
-Converte um vídeo do YouTube para o formato MP4 (vídeo com áudio) e retorna um ID para acesso ao stream.
+### 2. Conversão para MP4 (Vídeo)
+
+Este endpoint converte um vídeo do YouTube para o formato MP4 (vídeo com áudio), fornecendo um `id` para acesso ao stream de vídeo.
 
 **Endpoint:** `GET /ytmp4?key={KEY}&q={QUERY}`
 
-| Parâmetro | Tipo | Obrigatório | Descrição |
-| :--- | :--- | :--- | :--- |
-| `key` | string | Sim | Sua chave de API válida. |
-| `q` | string | Sim | Nome do vídeo, palavra-chave ou URL direta do YouTube. |
+| Parâmetro | Tipo   | Obrigatório | Descrição                                        |
+| :-------- | :----- | :---------- | :----------------------------------------------- |
+| `key`     | string | Sim         | Chave de API válida para autenticação.           |
+| `q`       | string | Sim         | Termo de busca (nome do vídeo, palavra-chave ou URL do YouTube). |
 
-#### Resposta de Sucesso (200 OK)
+#### Resposta de Sucesso (HTTP 200 OK)
+
 ```json
 {
   "success": true,
@@ -82,29 +86,37 @@ Converte um vídeo do YouTube para o formato MP4 (vídeo com áudio) e retorna u
 
 ---
 
-### 3. Obter Arquivo de Mídia (Streaming)
-Endpoint dedicado que retorna o arquivo binário (MP3/MP4). Ideal para ser consumido diretamente por elementos `<audio>` ou `<video>` HTML5.
+### 3. Obtenção de Arquivo de Mídia (Streaming)
+
+Este endpoint é utilizado para o streaming direto do arquivo de mídia (MP3/MP4). É ideal para integração com elementos `<audio>` ou `<video>` em HTML5.
 
 **Endpoint:** `GET /youtube/media?id={ID}`
 
-> **Nota:** Este endpoint não exige chave de API, pois o ID já é temporário e autenticado indiretamente.
+> **Nota:** A autenticação via chave de API não é necessária para este endpoint, pois o `id` já incorpora a validade e a autorização temporária.
 
-| Parâmetro | Tipo | Obrigatório | Descrição |
-| :--- | :--- | :--- | :--- |
-| `id` | string | Sim | ID da mídia obtido nos endpoints de conversão. |
+| Parâmetro | Tipo   | Obrigatório | Descrição                                        |
+| :-------- | :----- | :---------- | :----------------------------------------------- |
+| `id`      | string | Sim         | Identificador único da mídia, obtido nos endpoints de conversão. |
 
 **Headers de Resposta:**
+
 *   `Content-Type`: `audio/mpeg` ou `video/mp4`
-*   `Content-Disposition`: `inline; filename="titulo.mp3"`
+*   `Content-Disposition`: `inline; filename="titulo_do_video.mp3"` (pode ser alterado para `attachment` para forçar o download).
 
 ---
 
-### 4. Obter Informações da Mídia (Metadados)
-Retorna os metadados completos de uma mídia previamente processada.
+### 4. Obtenção de Informações da Mídia (Metadados)
+
+Este endpoint retorna metadados completos de uma mídia que foi previamente processada, incluindo título, duração e thumbnail.
 
 **Endpoint:** `GET /youtube/info?id={ID}`
 
-#### Resposta de Sucesso (200 OK)
+| Parâmetro | Tipo   | Obrigatório | Descrição                                        |
+| :-------- | :----- | :---------- | :----------------------------------------------- |
+| `id`      | string | Sim         | Identificador único da mídia.                    |
+
+#### Resposta de Sucesso (HTTP 200 OK)
+
 ```json
 {
   "success": true,
@@ -126,26 +138,28 @@ Retorna os metadados completos de uma mídia previamente processada.
 
 ---
 
-## ⚠️ Tratamento de Erros
+## Tratamento de Erros
 
-| HTTP | Código do Erro | Descrição |
-| :--- | :--- | :--- |
-| 400 | `INVALID_QUERY` | O parâmetro `q` não foi informado ou é inválido. |
-| 401 | `INVALID_KEY` | Chave de API não fornecida ou inválida. |
-| 404 | `VIDEO_NOT_FOUND` | Nenhum vídeo encontrado para o termo pesquisado. |
-| 404 | `MEDIA_NOT_FOUND` | Mídia expirada ou não encontrada (após 2h). |
-| 500 | `PROCESSING_ERROR` | Falha interna ao processar a mídia. |
-| 504 | `PROCESSING_TIMEOUT` | Tempo limite de processamento excedido. |
+A API utiliza códigos de status HTTP e mensagens de erro padronizadas para indicar problemas nas requisições:
+
+| HTTP Status | Código do Erro         | Descrição                                                              |
+| :---------- | :--------------------- | :--------------------------------------------------------------------- |
+| `400`       | `INVALID_QUERY`        | O parâmetro `q` está ausente ou é inválido.                           |
+| `401`       | `INVALID_KEY`          | A chave de API fornecida é inválida ou está ausente.                   |
+| `404`       | `VIDEO_NOT_FOUND`      | Nenhum vídeo foi encontrado para o termo de busca especificado.       |
+| `404`       | `MEDIA_NOT_FOUND`      | A mídia solicitada expirou ou não foi encontrada.                      |
+| `500`       | `PROCESSING_ERROR`     | Ocorreu uma falha interna durante o processamento da mídia.            |
+| `504`       | `PROCESSING_TIMEOUT`   | O tempo limite para o processamento da mídia foi excedido.             |
 
 ---
 
-## ⚖️ Regras de Negócio e Notas
+## Regras de Negócio e Considerações Finais
 
-*   **Validade dos Links:** Todos os IDs gerados expiram automaticamente após **2 horas**.
-*   **Limpeza de Cache:** O sistema realiza uma limpeza automática a cada 30 minutos para remover arquivos expirados.
-*   **Motor de Busca:** A API utiliza algoritmos avançados para encontrar o vídeo mais relevante com base no termo fornecido.
-*   **Streaming vs Download:** A API fornece links de streaming. Para forçar o download, o cliente deve tratar o header `Content-Disposition`.
-*   **Disponibilidade:** Certifique-se de que o vídeo do YouTube é público e não possui restrições de idade ou região.
+*   **Validade dos IDs:** Todos os identificadores de mídia (`id`) gerados pela API expiram automaticamente após 2 horas.
+*   **Limpeza de Cache:** O sistema implementa uma rotina de limpeza automática a cada 30 minutos para remover entradas de cache expiradas.
+*   **Mecanismo de Busca:** A API emprega algoritmos avançados para identificar o vídeo mais relevante no YouTube com base no parâmetro `q` fornecido.
+*   **Streaming vs. Download:** A API disponibiliza links para streaming de mídia. Para iniciar um download direto, o cliente deve configurar adequadamente o cabeçalho `Content-Disposition`.
+*   **Disponibilidade de Vídeos:** É fundamental assegurar que o vídeo do YouTube alvo seja público e não esteja sujeito a restrições de idade ou geográficas.
 
 ---
 
