@@ -8,7 +8,7 @@ Este documento detalha a **YouTube Media API**, um sistema robusto para a extra�
 
 A API opera sob as seguintes especificações técnicas:
 
-*   **Base URL:** `https://hubsdev.com/api/download`
+*   **Base URL:** `https://fluxdevservice/api/download`
 *   **Formato de Dados:** `JSON`
 *   **Autenticação:** Requer uma chave de API válida, fornecida via parâmetro `key`.
 *   **Tempo de Vida do Link:** Os links gerados possuem validade de 2 horas.
